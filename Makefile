@@ -12,7 +12,7 @@ $(SUBDIRS):
 
 INSTALLDIR = /usr/local/lib/gstreamer-1.0
 groj:
-	install -m 0755 python-test/groj.py $(INSTALLDIR)
+	install -m 0755 test-python/groj.py $(INSTALLDIR)
 
 install: groj
 	for DIR in $(SUBDIRS); do \
@@ -20,6 +20,13 @@ install: groj
         done
 
 autogen:
+	for DIR in $(SUBDIRS); do \
+	cd $(MAINDIR); \
+	cd $$DIR; pwd; \
+	./$@.sh; \
+	done
+
+autoclean:
 	for DIR in $(SUBDIRS); do \
 	cd $(MAINDIR); \
 	cd $$DIR; pwd; \

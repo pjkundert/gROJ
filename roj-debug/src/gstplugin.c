@@ -2,7 +2,7 @@
  * GStreamer
  * Copyright (C) 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
- * Copyright (C) 2015 Krzysztof Czarnecki <czarnecki.krzysiek@gmail.com>
+ * Copyright (C) 2015 Krzysztof Czarnecki & Dorian Dabrowski
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -52,7 +52,6 @@
 GST_DEBUG_CATEGORY_STATIC (gst_plugin_template_debug);
 #define GST_CAT_DEFAULT gst_plugin_template_debug
 
-/* Filter signals and args */
 enum
 {
   LAST_SIGNAL
@@ -103,13 +102,13 @@ gst_plugin_template_class_init (GstPluginTemplateClass * klass)
   gobject_class->get_property = gst_plugin_template_get_property;
 
   g_object_class_install_property (gobject_class, PROP_SILENT,
-      g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
+      g_param_spec_boolean ("silent", "silent", "produce verbose output",
           FALSE, G_PARAM_READWRITE));
 
   gst_element_class_set_details_simple(gstelement_class,
     "Plugin",
     "GSTroj:Generic",
-    "GSTroj:Generic Template Element",
+    "GSTroj:Generic",
     "Krzysztof Czarnecki & Dorian Dabrowski");
 
   gst_element_class_add_pad_template (gstelement_class, gst_static_pad_template_get (&src_factory));
@@ -123,10 +122,8 @@ static void
 gst_plugin_template_init (GstPluginTemplate * filter)
 {
   filter->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
-  gst_pad_set_event_function (filter->sinkpad,
-                              GST_DEBUG_FUNCPTR(gst_plugin_template_sink_event));
-  gst_pad_set_chain_function (filter->sinkpad,
-                              GST_DEBUG_FUNCPTR(gst_plugin_template_chain));
+  gst_pad_set_event_function (filter->sinkpad, GST_DEBUG_FUNCPTR(gst_plugin_template_sink_event));
+  gst_pad_set_chain_function (filter->sinkpad, GST_DEBUG_FUNCPTR(gst_plugin_template_chain));
   GST_PAD_SET_PROXY_CAPS (filter->sinkpad);
   gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
 
@@ -172,17 +169,14 @@ gst_plugin_template_get_property (GObject * object, guint prop_id, GValue * valu
 static gboolean
 gst_plugin_template_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
+  GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (parent);
+
   gboolean ret;
-  GstPluginTemplate *filter;
-
-  filter = GST_PLUGIN_TEMPLATE (parent);
-
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_CAPS:
     {
       GstCaps * caps;
       gst_event_parse_caps (event, &caps);
-      /* do something with the caps and forward */
       ret = gst_pad_event_default (pad, parent, event);
       break;
     }
@@ -219,7 +213,6 @@ plugin_init (GstPlugin * plugin)
    * exchange the string 'Template plugin' with your description
    */
   GST_DEBUG_CATEGORY_INIT (gst_plugin_template_debug, "plugin", 0, "Template plugin");
-
   return gst_element_register (plugin, "plugin", GST_RANK_NONE, GST_TYPE_PLUGIN_TEMPLATE);
 }
 
@@ -229,7 +222,7 @@ plugin_init (GstPlugin * plugin)
  * compile this code. GST_PLUGIN_DEFINE needs PACKAGE to be defined.
  */
 #ifndef PACKAGE
-#define PACKAGE "myfirstplugin"
+#define PACKAGE "plugin"
 #endif
 
 /* gstreamer looks for this structure to register plugins
@@ -239,7 +232,7 @@ GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     plugin,
-    "Template plugin",
+    "plugin",
     plugin_init,
     VERSION,
     "LGPL",
