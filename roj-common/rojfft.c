@@ -76,11 +76,11 @@ groj_create_window (int window, int width)
 	
   case WINDOW_BLACKMAN_HARRIS:
     {
-      double a0 = 0.3232153788877343;
-      double a1 = -0.4714921439576260;
-      double a2 = 0.175534129901972;
-      double a3 = -0.02849699010614994;
-      double a4 = 0.001261357088292677;
+      double a0 = +3.232153788877343e-1;
+      double a1 = -4.714921439576260e-1;
+      double a2 = +1.755341299601972e-1;
+      double a3 = -2.849699010614994e-2;
+      double a4 = +1.261357088292677e-3;
       
       int n;
       double sum = 0.0;
